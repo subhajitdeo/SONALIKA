@@ -1,1 +1,60 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sector EMA Dashboard</title>
+</head>
+<body>
+    <h1>Sector EMA Dashboard</h1>
+
+    <table id="emaTable" border="1">
+        <tr>
+            <th>Sector</th>
+            <th>Stock</th>
+            <th>% Above EMA20</th>
+        </tr>
+    </table>
+
+    <script>
+        // Dummy data (for now)
+        const data = {
+            "IT": {
+                "TCS": [4500, 4550, 4600, 4650],
+                "Infosys": [1500, 1520, 1530, 1510]
+            },
+            "Banking": {
+                "HDFC": [1600, 1620, 1610, 1630],
+                "ICICI": [800, 810, 805, 815]
+            }
+        };
+
+        function calculateEMA(prices, period) {
+            let k = 2 / (period + 1);
+            let ema = [prices[0]];
+            for (let i = 1; i < prices.length; i++) {
+                ema.push(prices[i] * k + ema[i - 1] * (1 - k));
+            }
+            return ema;
+        }
+
+        function percentAboveEMA(prices, ema) {
+            let count = prices.filter((p, i) => p > ema[i]).length;
+            return ((count / prices.length) * 100).toFixed(2);
+        }
+
+        let table = document.getElementById("emaTable");
+
+        for (let sector in data) {
+            for (let stock in data[sector]) {
+                let prices = data[sector][stock];
+                let ema20 = calculateEMA(prices, 20);
+
+                let row = table.insertRow();
+                row.insertCell(0).innerText = sector;
+                row.insertCell(1).innerText = stock;
+                row.insertCell(2).innerText = percentAboveEMA(prices, ema20) + "%";
+            }
+        }
+    </script>
+</body>
+</html>
