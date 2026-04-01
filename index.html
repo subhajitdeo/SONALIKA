@@ -5,7 +5,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="assets/css/main.css" />
-    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 
     <style>
         table {
@@ -28,33 +27,26 @@
 <div id="wrapper">
 
 <header id="header">
-    <div class="logo">
-        <span class="icon fa-gem"></span>
-    </div>
+    <div class="logo"><span class="icon fa-gem"></span></div>
     <div class="content">
         <div class="inner">
             <h1>SONALIKA</h1>
-            <p>Sector Strength Dashboard 🚀</p>
+            <p>Live Sector EMA Dashboard 🚀</p>
         </div>
     </div>
     <nav>
         <ul>
             <li><a href="#intro">Intro</a></li>
-            <li><a href="#work">Work</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
         </ul>
     </nav>
 </header>
 
 <div id="main">
 
-<!-- INTRO -->
 <article id="intro">
-    <h2 class="major">Intro</h2>
-    <span class="image main"><img src="images/pic01.jpg" alt="" /></span>
+    <h2 class="major">Live EMA Dashboard</h2>
 
-    <h3>📊 Sector EMA Dashboard</h3>
+    <p style="color:white;">Loading data... ⏳</p>
 
     <table id="emaTable" border="1">
         <tr>
@@ -67,31 +59,6 @@
     </table>
 </article>
 
-<!-- WORK -->
-<article id="work">
-    <h2 class="major">Work</h2>
-    <span class="image main"><img src="images/pic02.jpg" alt="" /></span>
-    <p>Your work section here.</p>
-</article>
-
-<!-- ABOUT -->
-<article id="about">
-    <h2 class="major">About</h2>
-    <span class="image main"><img src="images/pic03.jpg" alt="" /></span>
-    <p>About you.</p>
-</article>
-
-<!-- CONTACT -->
-<article id="contact">
-    <h2 class="major">Contact</h2>
-    <form>
-        <input type="text" placeholder="Name" /><br><br>
-        <input type="email" placeholder="Email" /><br><br>
-        <textarea placeholder="Message"></textarea><br><br>
-        <button>Send</button>
-    </form>
-</article>
-
 </div>
 
 <footer id="footer">
@@ -102,7 +69,6 @@
 
 <div id="bg"></div>
 
-<!-- IMPORTANT: ALL TEMPLATE SCRIPTS -->
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/js/browser.min.js"></script>
 <script src="assets/js/breakpoints.min.js"></script>
@@ -111,17 +77,37 @@
 
 <script>
 
-// 🔥 DATA
-const data = {
-    "IT": {
-        "TCS": [4500,4550,4600,4650,4700],
-        "Infosys": [1500,1520,1530,1510,1540]
-    },
-    "Banking": {
-        "HDFC": [1600,1620,1610,1630,1650],
-        "ICICI": [800,810,805,815,820]
-    }
+// 🔑 PUT YOUR API KEY HERE
+const API_KEY = "PASTE_YOUR_API_KEY_HERE";
+
+// 📊 SECTORS (start small)
+const sectors = {
+    "IT": ["TCS"],
+    "Banking": ["HDFCBANK"]
 };
+
+// 🔥 FETCH DATA
+async function getStockData(symbol) {
+
+    try {
+        const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`;
+        let res = await fetch(url);
+        let data = await res.json();
+
+        let series = data["Time Series (Daily)"];
+        if (!series) return [];
+
+        let prices = Object.values(series)
+            .slice(0, 50)
+            .map(day => parseFloat(day["4. close"]));
+
+        return prices.reverse();
+
+    } catch (err) {
+        console.log("Error:", symbol);
+        return [];
+    }
+}
 
 // EMA
 function calculateEMA(prices, period) {
@@ -146,23 +132,25 @@ function getGradientColor(value) {
     return `rgb(${r}, ${g}, 0)`;
 }
 
-// Render after template loads
-setTimeout(() => {
+// MAIN
+setTimeout(async () => {
 
     let table = document.getElementById("emaTable");
-    if (!table) return;
-
     let results = [];
 
-    for (let sector in data) {
+    for (let sector in sectors) {
 
-        let stocks = data[sector];
-        let total = Object.keys(stocks).length;
+        let stocks = sectors[sector];
+        let total = stocks.length;
 
         let c20=0,c50=0,c100=0,c200=0;
 
-        for (let stock in stocks) {
-            let prices = stocks[stock];
+        for (let symbol of stocks) {
+
+            let prices = await getStockData(symbol);
+
+            if (prices.length === 0) continue;
+
             let last = prices[prices.length-1];
 
             if (last > calculateEMA(prices,20)) c20++;
@@ -193,7 +181,7 @@ setTimeout(() => {
         });
     });
 
-}, 300);
+}, 1000);
 
 </script>
 
