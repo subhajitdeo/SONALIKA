@@ -17,7 +17,15 @@
             font-weight: bold;
         }
         td {
-            transition: background-color 0.3s ease;
+            transition: 0.3s;
+        }
+
+        .top {
+            box-shadow: 0 0 15px lime;
+        }
+
+        .weak {
+            box-shadow: 0 0 15px red;
         }
     </style>
 </head>
@@ -31,7 +39,7 @@
     <div class="content">
         <div class="inner">
             <h1>SONALIKA</h1>
-            <p>Sector Strength Dashboard 🚀 (No API Limit)</p>
+            <p>Sector Strength Dashboard 🚀</p>
         </div>
     </div>
     <nav>
@@ -44,11 +52,10 @@
 <div id="main">
 
 <article id="intro">
-    <h2 class="major">Sector EMA Dashboard</h2>
+    <h2 class="major">Sector EMA Strength</h2>
+    <p style="color:white;">Live Market Breadth View</p>
 
-    <p style="color:white;">Loading data... ⏳</p>
-
-    <table id="emaTable" border="1">
+    <table id="emaTable">
         <tr>
             <th>Sector</th>
             <th>EMA20</th>
@@ -77,24 +84,34 @@
 
 <script>
 
-// 📊 SECTORS (YOU CAN EXPAND THIS 🚀)
+// 🔥 FULL SECTOR LIST
 const sectors = {
 
-    "IT": ["TCS", "INFY", "WIPRO", "HCLTECH"],
+    "IT": ["TCS","INFY","WIPRO","HCLTECH","TECHM"],
 
-    "Banking": ["HDFCBANK", "ICICIBANK", "SBIN", "AXISBANK"],
+    "Banking": ["HDFCBANK","ICICIBANK","SBIN","AXISBANK","KOTAKBANK"],
 
-    "Auto": ["TATAMOTORS", "MARUTI", "M&M"],
+    "Auto": ["TATAMOTORS","MARUTI","M&M","BAJAJ-AUTO","HEROMOTOCO"],
 
-    "FMCG": ["HINDUNILVR", "ITC", "NESTLEIND"],
+    "FMCG": ["HINDUNILVR","ITC","NESTLEIND","BRITANNIA","DABUR"],
 
-    "Pharma": ["SUNPHARMA", "DRREDDY"],
+    "Pharma": ["SUNPHARMA","DRREDDY","CIPLA","DIVISLAB","LUPIN"],
 
-    "Energy": ["RELIANCE", "ONGC"]
+    "Energy": ["RELIANCE","ONGC","BPCL","IOC","GAIL"],
+
+    "Metal": ["TATASTEEL","JSWSTEEL","HINDALCO","COALINDIA"],
+
+    "Infra": ["LT","ULTRACEMCO","GRASIM"],
+
+    "Telecom": ["BHARTIARTL"],
+
+    "Finance": ["BAJFINANCE","BAJAJFINSV","SBILIFE","HDFCLIFE"],
+
+    "Power": ["NTPC","POWERGRID"]
 
 };
 
-// 🔥 FETCH FROM YAHOO (NO API KEY)
+// 🔥 FETCH DATA
 async function getStockData(symbol) {
     try {
         const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.NS`;
@@ -104,10 +121,9 @@ async function getStockData(symbol) {
 
         let prices = data.chart.result[0].indicators.quote[0].close;
 
-        return prices.filter(p => p !== null).slice(-100);
+        return prices.filter(p => p !== null).slice(-120);
 
-    } catch (err) {
-        console.log("Error:", symbol);
+    } catch {
         return [];
     }
 }
@@ -125,7 +141,6 @@ function calculateEMA(prices, period) {
 // COLOR
 function getGradientColor(value) {
     let r, g;
-
     if (value < 50) {
         r = 255;
         g = Math.round(5.1 * value);
@@ -133,7 +148,6 @@ function getGradientColor(value) {
         g = 255;
         r = Math.round(255 - (value - 50) * 5.1);
     }
-
     return `rgb(${r}, ${g}, 0)`;
 }
 
@@ -154,7 +168,7 @@ setTimeout(async () => {
 
             let prices = await getStockData(symbol);
 
-            if (prices.length < 20) continue;
+            if (prices.length < 50) continue;
 
             let last = prices[prices.length-1];
 
@@ -173,17 +187,24 @@ setTimeout(async () => {
         });
     }
 
+    // SORT
     results.sort((a,b)=>b.p20-a.p20);
 
-    results.forEach(r=>{
+    // RENDER
+    results.forEach((r,index)=>{
+
         let row = table.insertRow();
         row.insertCell(0).innerText = r.sector;
+
+        if(index === 0) row.classList.add("top");
+        if(index === results.length-1) row.classList.add("weak");
 
         [r.p20,r.p50,r.p100,r.p200].forEach(v=>{
             let c=row.insertCell(-1);
             c.innerText=v.toFixed(1)+"%";
             c.style.backgroundColor=getGradientColor(v);
         });
+
     });
 
 }, 1000);
