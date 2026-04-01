@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="assets/css/main.css" />
     <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 
-    <!-- Smooth color styling -->
     <style>
         td {
             transition: background-color 0.3s ease;
@@ -21,101 +20,87 @@
 
 <div id="wrapper">
 
-    <!-- Header -->
-    <header id="header">
-        <div class="logo">
-            <span class="icon fa-gem"></span>
-        </div>
-        <div class="content">
-            <div class="inner">
-                <h1>SONALIKA</h1>
-                <p>EMA Dashboard 🚀</p>
-            </div>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="#intro">Intro</a></li>
-                <li><a href="#work">Work</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <!-- Main -->
-    <div id="main">
-
-        <!-- Intro -->
-        <article id="intro">
-            <h2 class="major">Intro</h2>
-            <span class="image main"><img src="images/pic01.jpg" alt="" /></span>
-
-            <h2>📊 Sector EMA Dashboard</h2>
-
-            <table id="emaTable" border="1" style="width:100%;">
-                <tr>
-                    <th>Sector</th>
-                    <th>Stock</th>
-                    <th>EMA20</th>
-                    <th>EMA50</th>
-                    <th>EMA100</th>
-                    <th>EMA200</th>
-                </tr>
-            </table>
-        </article>
-
-        <!-- Work -->
-        <article id="work">
-            <h2 class="major">Work</h2>
-            <span class="image main"><img src="images/pic02.jpg" alt="" /></span>
-            <p>Your work section</p>
-        </article>
-
-        <!-- About -->
-        <article id="about">
-            <h2 class="major">About</h2>
-            <span class="image main"><img src="images/pic03.jpg" alt="" /></span>
-            <p>About you</p>
-        </article>
-
-        <!-- Contact -->
-        <article id="contact">
-            <h2 class="major">Contact</h2>
-            <p>Contact info</p>
-        </article>
-
+<header id="header">
+    <div class="logo">
+        <span class="icon fa-gem"></span>
     </div>
+    <div class="content">
+        <div class="inner">
+            <h1>SONALIKA</h1>
+            <p>Sector Strength Dashboard 🚀</p>
+        </div>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="#intro">Intro</a></li>
+            <li><a href="#work">Work</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+</header>
 
-    <!-- Footer -->
-    <footer id="footer">
-        <p class="copyright">&copy; SONALIKA</p>
-    </footer>
+<div id="main">
+
+<article id="intro">
+    <h2 class="major">Intro</h2>
+    <span class="image main"><img src="images/pic01.jpg" alt="" /></span>
+
+    <h2>📊 Sector EMA Strength</h2>
+
+    <table id="emaTable" border="1" style="width:100%;">
+        <tr>
+            <th>Sector</th>
+            <th>EMA20</th>
+            <th>EMA50</th>
+            <th>EMA100</th>
+            <th>EMA200</th>
+        </tr>
+    </table>
+</article>
+
+<article id="work">
+    <h2 class="major">Work</h2>
+</article>
+
+<article id="about">
+    <h2 class="major">About</h2>
+</article>
+
+<article id="contact">
+    <h2 class="major">Contact</h2>
+</article>
 
 </div>
 
-<!-- IMPORTANT for animation -->
+<footer id="footer">
+    <p>&copy; SONALIKA</p>
+</footer>
+
+</div>
+
 <div id="bg"></div>
 
-<!-- Scripts -->
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/js/browser.min.js"></script>
 <script src="assets/js/breakpoints.min.js"></script>
 <script src="assets/js/util.js"></script>
 <script src="assets/js/main.js"></script>
 
-<!-- EMA + GRADIENT SCRIPT -->
 <script>
+// Dummy Data (you can expand later)
 const data = {
     "IT": {
-        "TCS": [4500, 4550, 4600, 4650, 4700],
-        "Infosys": [1500, 1520, 1530, 1510, 1540]
+        "TCS": [4500,4550,4600,4650,4700],
+        "Infosys": [1500,1520,1530,1510,1540]
     },
     "Banking": {
-        "HDFC": [1600, 1620, 1610, 1630, 1650],
-        "ICICI": [800, 810, 805, 815, 820]
+        "HDFC": [1600,1620,1610,1630,1650],
+        "ICICI": [800,810,805,815,820]
     }
 };
 
+// EMA
 function calculateEMA(prices, period) {
     let k = 2 / (period + 1);
     let ema = [prices[0]];
@@ -125,12 +110,7 @@ function calculateEMA(prices, period) {
     return ema;
 }
 
-function percentAboveEMA(prices, ema) {
-    let count = prices.filter((p, i) => p > ema[i]).length;
-    return ((count / prices.length) * 100);
-}
-
-// 🔥 Smooth gradient color
+// Gradient Color
 function getGradientColor(value) {
     let r, g;
 
@@ -148,34 +128,40 @@ function getGradientColor(value) {
 let table = document.getElementById("emaTable");
 
 for (let sector in data) {
-    for (let stock in data[sector]) {
-        let prices = data[sector][stock];
 
-        let p20 = percentAboveEMA(prices, calculateEMA(prices, 20));
-        let p50 = percentAboveEMA(prices, calculateEMA(prices, 50));
-        let p100 = percentAboveEMA(prices, calculateEMA(prices, 100));
-        let p200 = percentAboveEMA(prices, calculateEMA(prices, 200));
+    let stocks = data[sector];
+    let total = Object.keys(stocks).length;
 
-        let row = table.insertRow();
-        row.insertCell(0).innerText = sector;
-        row.insertCell(1).innerText = stock;
+    let count20 = 0, count50 = 0, count100 = 0, count200 = 0;
 
-        let c1 = row.insertCell(2);
-        c1.innerText = p20.toFixed(2) + "%";
-        c1.style.backgroundColor = getGradientColor(p20);
+    for (let stock in stocks) {
+        let prices = stocks[stock];
+        let last = prices[prices.length - 1];
 
-        let c2 = row.insertCell(3);
-        c2.innerText = p50.toFixed(2) + "%";
-        c2.style.backgroundColor = getGradientColor(p50);
-
-        let c3 = row.insertCell(4);
-        c3.innerText = p100.toFixed(2) + "%";
-        c3.style.backgroundColor = getGradientColor(p100);
-
-        let c4 = row.insertCell(5);
-        c4.innerText = p200.toFixed(2) + "%";
-        c4.style.backgroundColor = getGradientColor(p200);
+        if (last > calculateEMA(prices,20).slice(-1)[0]) count20++;
+        if (last > calculateEMA(prices,50).slice(-1)[0]) count50++;
+        if (last > calculateEMA(prices,100).slice(-1)[0]) count100++;
+        if (last > calculateEMA(prices,200).slice(-1)[0]) count200++;
     }
+
+    let p20 = (count20 / total) * 100;
+    let p50 = (count50 / total) * 100;
+    let p100 = (count100 / total) * 100;
+    let p200 = (count200 / total) * 100;
+
+    let row = table.insertRow();
+    row.insertCell(0).innerText = sector;
+
+    function addCell(val) {
+        let c = row.insertCell(-1);
+        c.innerText = val.toFixed(2) + "%";
+        c.style.backgroundColor = getGradientColor(val);
+    }
+
+    addCell(p20);
+    addCell(p50);
+    addCell(p100);
+    addCell(p200);
 }
 </script>
 
