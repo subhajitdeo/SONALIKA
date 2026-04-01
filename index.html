@@ -11,21 +11,27 @@
             width: 100%;
             border-collapse: collapse;
         }
+
         th, td {
             padding: 10px;
             text-align: center;
             font-weight: bold;
         }
+
         td {
-            transition: 0.3s;
+            transition: background-color 0.6s ease, transform 0.2s ease;
+        }
+
+        td:hover {
+            transform: scale(1.05);
         }
 
         .top {
-            box-shadow: 0 0 15px lime;
+            box-shadow: 0 0 15px rgba(120, 200, 140, 0.6);
         }
 
         .weak {
-            box-shadow: 0 0 15px red;
+            box-shadow: 0 0 15px rgba(220, 110, 110, 0.6);
         }
     </style>
 </head>
@@ -42,18 +48,22 @@
             <p>Sector Strength Dashboard 🚀</p>
         </div>
     </div>
+
     <nav>
         <ul>
             <li><a href="#intro">Intro</a></li>
+            <li><a href="#work">Work</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
         </ul>
     </nav>
 </header>
 
 <div id="main">
 
+<!-- INTRO -->
 <article id="intro">
     <h2 class="major">Sector EMA Strength</h2>
-    <p style="color:white;">Live Market Breadth View</p>
 
     <table id="emaTable">
         <tr>
@@ -64,6 +74,24 @@
             <th>EMA200</th>
         </tr>
     </table>
+</article>
+
+<!-- WORK -->
+<article id="work">
+    <h2 class="major">Work</h2>
+    <p>This dashboard calculates sector strength using EMA logic.</p>
+</article>
+
+<!-- ABOUT -->
+<article id="about">
+    <h2 class="major">About</h2>
+    <p>Built using JavaScript + Yahoo Finance data. No API limits.</p>
+</article>
+
+<!-- CONTACT -->
+<article id="contact">
+    <h2 class="major">Contact</h2>
+    <p>Coming soon...</p>
 </article>
 
 </div>
@@ -84,45 +112,23 @@
 
 <script>
 
-// 🔥 FULL SECTOR LIST
+// 🔥 SECTORS
 const sectors = {
-
-    "IT": ["TCS","INFY","WIPRO","HCLTECH","TECHM"],
-
-    "Banking": ["HDFCBANK","ICICIBANK","SBIN","AXISBANK","KOTAKBANK"],
-
-    "Auto": ["TATAMOTORS","MARUTI","M&M","BAJAJ-AUTO","HEROMOTOCO"],
-
-    "FMCG": ["HINDUNILVR","ITC","NESTLEIND","BRITANNIA","DABUR"],
-
-    "Pharma": ["SUNPHARMA","DRREDDY","CIPLA","DIVISLAB","LUPIN"],
-
-    "Energy": ["RELIANCE","ONGC","BPCL","IOC","GAIL"],
-
-    "Metal": ["TATASTEEL","JSWSTEEL","HINDALCO","COALINDIA"],
-
-    "Infra": ["LT","ULTRACEMCO","GRASIM"],
-
-    "Telecom": ["BHARTIARTL"],
-
-    "Finance": ["BAJFINANCE","BAJAJFINSV","SBILIFE","HDFCLIFE"],
-
-    "Power": ["NTPC","POWERGRID"]
-
+    "IT": ["TCS","INFY","WIPRO","HCLTECH"],
+    "Banking": ["HDFCBANK","ICICIBANK","SBIN","AXISBANK"],
+    "Auto": ["TATAMOTORS","MARUTI","M&M"],
+    "FMCG": ["HINDUNILVR","ITC","NESTLEIND"],
+    "Pharma": ["SUNPHARMA","DRREDDY"]
 };
 
-// 🔥 FETCH DATA
+// FETCH
 async function getStockData(symbol) {
     try {
         const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.NS`;
-
         let res = await fetch(url);
         let data = await res.json();
-
         let prices = data.chart.result[0].indicators.quote[0].close;
-
         return prices.filter(p => p !== null).slice(-120);
-
     } catch {
         return [];
     }
@@ -138,17 +144,30 @@ function calculateEMA(prices, period) {
     return ema;
 }
 
-// COLOR
+// 🎨 SOFT TRADINGVIEW COLOR
 function getGradientColor(value) {
-    let r, g;
+
+    value = Math.max(0, Math.min(100, value));
+
+    const red   = { r: 220, g: 110, b: 110 };
+    const yellow= { r: 230, g: 200, b: 120 };
+    const green = { r: 120, g: 200, b: 140 };
+
+    let r,g,b;
+
     if (value < 50) {
-        r = 255;
-        g = Math.round(5.1 * value);
+        let t = value / 50;
+        r = red.r + (yellow.r - red.r) * t;
+        g = red.g + (yellow.g - red.g) * t;
+        b = red.b + (yellow.b - red.b) * t;
     } else {
-        g = 255;
-        r = Math.round(255 - (value - 50) * 5.1);
+        let t = (value - 50) / 50;
+        r = yellow.r + (green.r - yellow.r) * t;
+        g = yellow.g + (green.g - yellow.g) * t;
+        b = yellow.b + (green.b - yellow.b) * t;
     }
-    return `rgb(${r}, ${g}, 0)`;
+
+    return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
 }
 
 // MAIN
@@ -167,7 +186,6 @@ setTimeout(async () => {
         for (let symbol of stocks) {
 
             let prices = await getStockData(symbol);
-
             if (prices.length < 50) continue;
 
             let last = prices[prices.length-1];
@@ -187,10 +205,8 @@ setTimeout(async () => {
         });
     }
 
-    // SORT
     results.sort((a,b)=>b.p20-a.p20);
 
-    // RENDER
     results.forEach((r,index)=>{
 
         let row = table.insertRow();
