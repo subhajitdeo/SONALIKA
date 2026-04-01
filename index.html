@@ -3,8 +3,9 @@
 <head>
     <title>SONALIKA</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 </head>
 
 <body class="is-preload">
@@ -38,6 +39,7 @@
         <!-- Intro -->
         <article id="intro">
             <h2 class="major">Intro</h2>
+            <span class="image main"><img src="images/pic01.jpg" alt="" /></span>
 
             <h2>📊 Sector EMA Dashboard</h2>
 
@@ -45,24 +47,25 @@
                 <tr>
                     <th>Sector</th>
                     <th>Stock</th>
-                    <th>EMA20 %</th>
-                    <th>EMA50 %</th>
-                    <th>EMA100 %</th>
-                    <th>EMA200 %</th>
+                    <th>EMA20</th>
+                    <th>EMA50</th>
+                    <th>EMA100</th>
+                    <th>EMA200</th>
                 </tr>
             </table>
-
         </article>
 
         <!-- Work -->
         <article id="work">
             <h2 class="major">Work</h2>
+            <span class="image main"><img src="images/pic02.jpg" alt="" /></span>
             <p>Your work section</p>
         </article>
 
         <!-- About -->
         <article id="about">
             <h2 class="major">About</h2>
+            <span class="image main"><img src="images/pic03.jpg" alt="" /></span>
             <p>About you</p>
         </article>
 
@@ -74,7 +77,15 @@
 
     </div>
 
+    <!-- Footer -->
+    <footer id="footer">
+        <p class="copyright">&copy; SONALIKA</p>
+    </footer>
+
 </div>
+
+<!-- BG (IMPORTANT for animation) -->
+<div id="bg"></div>
 
 <!-- Scripts -->
 <script src="assets/js/jquery.min.js"></script>
@@ -83,7 +94,7 @@
 <script src="assets/js/util.js"></script>
 <script src="assets/js/main.js"></script>
 
-<!-- 🔥 EMA SCRIPT -->
+<!-- EMA SCRIPT -->
 <script>
 const data = {
     "IT": {
