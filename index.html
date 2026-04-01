@@ -31,7 +31,7 @@
     <div class="content">
         <div class="inner">
             <h1>SONALIKA</h1>
-            <p>Live Sector EMA Dashboard 🚀</p>
+            <p>Sector Strength Dashboard 🚀 (No API Limit)</p>
         </div>
     </div>
     <nav>
@@ -44,7 +44,7 @@
 <div id="main">
 
 <article id="intro">
-    <h2 class="major">Live EMA Dashboard</h2>
+    <h2 class="major">Sector EMA Dashboard</h2>
 
     <p style="color:white;">Loading data... ⏳</p>
 
@@ -77,31 +77,34 @@
 
 <script>
 
-// 🔑 PUT YOUR API KEY HERE
-const API_KEY = "AKYTKEESWTXW2PGZ";
-
-// 📊 SECTORS (start small)
+// 📊 SECTORS (YOU CAN EXPAND THIS 🚀)
 const sectors = {
-    "IT": ["TCS"],
-    "Banking": ["HDFCBANK"]
+
+    "IT": ["TCS", "INFY", "WIPRO", "HCLTECH"],
+
+    "Banking": ["HDFCBANK", "ICICIBANK", "SBIN", "AXISBANK"],
+
+    "Auto": ["TATAMOTORS", "MARUTI", "M&M"],
+
+    "FMCG": ["HINDUNILVR", "ITC", "NESTLEIND"],
+
+    "Pharma": ["SUNPHARMA", "DRREDDY"],
+
+    "Energy": ["RELIANCE", "ONGC"]
+
 };
 
-// 🔥 FETCH DATA
+// 🔥 FETCH FROM YAHOO (NO API KEY)
 async function getStockData(symbol) {
-
     try {
-        const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`;
+        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.NS`;
+
         let res = await fetch(url);
         let data = await res.json();
 
-        let series = data["Time Series (Daily)"];
-        if (!series) return [];
+        let prices = data.chart.result[0].indicators.quote[0].close;
 
-        let prices = Object.values(series)
-            .slice(0, 50)
-            .map(day => parseFloat(day["4. close"]));
-
-        return prices.reverse();
+        return prices.filter(p => p !== null).slice(-100);
 
     } catch (err) {
         console.log("Error:", symbol);
@@ -119,9 +122,10 @@ function calculateEMA(prices, period) {
     return ema;
 }
 
-// Color
+// COLOR
 function getGradientColor(value) {
     let r, g;
+
     if (value < 50) {
         r = 255;
         g = Math.round(5.1 * value);
@@ -129,6 +133,7 @@ function getGradientColor(value) {
         g = 255;
         r = Math.round(255 - (value - 50) * 5.1);
     }
+
     return `rgb(${r}, ${g}, 0)`;
 }
 
@@ -149,7 +154,7 @@ setTimeout(async () => {
 
             let prices = await getStockData(symbol);
 
-            if (prices.length === 0) continue;
+            if (prices.length < 20) continue;
 
             let last = prices[prices.length-1];
 
