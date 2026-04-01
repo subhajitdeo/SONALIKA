@@ -6,6 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="assets/css/main.css" />
     <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+
+    <!-- Smooth color styling -->
+    <style>
+        td {
+            transition: background-color 0.3s ease;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body class="is-preload">
@@ -20,7 +29,7 @@
         <div class="content">
             <div class="inner">
                 <h1>SONALIKA</h1>
-                <p>Your EMA Dashboard 🚀</p>
+                <p>EMA Dashboard 🚀</p>
             </div>
         </div>
         <nav>
@@ -43,7 +52,7 @@
 
             <h2>📊 Sector EMA Dashboard</h2>
 
-            <table id="emaTable" border="1" style="width:100%; text-align:center;">
+            <table id="emaTable" border="1" style="width:100%;">
                 <tr>
                     <th>Sector</th>
                     <th>Stock</th>
@@ -84,7 +93,7 @@
 
 </div>
 
-<!-- BG (IMPORTANT for animation) -->
+<!-- IMPORTANT for animation -->
 <div id="bg"></div>
 
 <!-- Scripts -->
@@ -94,7 +103,7 @@
 <script src="assets/js/util.js"></script>
 <script src="assets/js/main.js"></script>
 
-<!-- EMA SCRIPT -->
+<!-- EMA + GRADIENT SCRIPT -->
 <script>
 const data = {
     "IT": {
@@ -118,7 +127,22 @@ function calculateEMA(prices, period) {
 
 function percentAboveEMA(prices, ema) {
     let count = prices.filter((p, i) => p > ema[i]).length;
-    return ((count / prices.length) * 100).toFixed(2);
+    return ((count / prices.length) * 100);
+}
+
+// 🔥 Smooth gradient color
+function getGradientColor(value) {
+    let r, g;
+
+    if (value < 50) {
+        r = 255;
+        g = Math.round(5.1 * value);
+    } else {
+        g = 255;
+        r = Math.round(255 - (value - 50) * 5.1);
+    }
+
+    return `rgb(${r}, ${g}, 0)`;
 }
 
 let table = document.getElementById("emaTable");
@@ -127,18 +151,30 @@ for (let sector in data) {
     for (let stock in data[sector]) {
         let prices = data[sector][stock];
 
-        let ema20 = calculateEMA(prices, 20);
-        let ema50 = calculateEMA(prices, 50);
-        let ema100 = calculateEMA(prices, 100);
-        let ema200 = calculateEMA(prices, 200);
+        let p20 = percentAboveEMA(prices, calculateEMA(prices, 20));
+        let p50 = percentAboveEMA(prices, calculateEMA(prices, 50));
+        let p100 = percentAboveEMA(prices, calculateEMA(prices, 100));
+        let p200 = percentAboveEMA(prices, calculateEMA(prices, 200));
 
         let row = table.insertRow();
         row.insertCell(0).innerText = sector;
         row.insertCell(1).innerText = stock;
-        row.insertCell(2).innerText = percentAboveEMA(prices, ema20) + "%";
-        row.insertCell(3).innerText = percentAboveEMA(prices, ema50) + "%";
-        row.insertCell(4).innerText = percentAboveEMA(prices, ema100) + "%";
-        row.insertCell(5).innerText = percentAboveEMA(prices, ema200) + "%";
+
+        let c1 = row.insertCell(2);
+        c1.innerText = p20.toFixed(2) + "%";
+        c1.style.backgroundColor = getGradientColor(p20);
+
+        let c2 = row.insertCell(3);
+        c2.innerText = p50.toFixed(2) + "%";
+        c2.style.backgroundColor = getGradientColor(p50);
+
+        let c3 = row.insertCell(4);
+        c3.innerText = p100.toFixed(2) + "%";
+        c3.style.backgroundColor = getGradientColor(p100);
+
+        let c4 = row.insertCell(5);
+        c4.innerText = p200.toFixed(2) + "%";
+        c4.style.backgroundColor = getGradientColor(p200);
     }
 }
 </script>
