@@ -3,15 +3,21 @@
 <head>
     <title>SONALIKA</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="assets/css/main.css" />
-    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 
     <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
         td {
             transition: background-color 0.3s ease;
-            font-weight: bold;
-            text-align: center;
         }
     </style>
 </head>
@@ -33,9 +39,6 @@
     <nav>
         <ul>
             <li><a href="#intro">Intro</a></li>
-            <li><a href="#work">Work</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
         </ul>
     </nav>
 </header>
@@ -43,12 +46,9 @@
 <div id="main">
 
 <article id="intro">
-    <h2 class="major">Intro</h2>
-    <span class="image main"><img src="images/pic01.jpg" alt="" /></span>
+    <h2 class="major">Sector EMA Strength</h2>
 
-    <h2>📊 Sector EMA Strength</h2>
-
-    <table id="emaTable" border="1" style="width:100%;">
+    <table id="emaTable" border="1">
         <tr>
             <th>Sector</th>
             <th>EMA20</th>
@@ -57,18 +57,6 @@
             <th>EMA200</th>
         </tr>
     </table>
-</article>
-
-<article id="work">
-    <h2 class="major">Work</h2>
-</article>
-
-<article id="about">
-    <h2 class="major">About</h2>
-</article>
-
-<article id="contact">
-    <h2 class="major">Contact</h2>
 </article>
 
 </div>
@@ -82,13 +70,11 @@
 <div id="bg"></div>
 
 <script src="assets/js/jquery.min.js"></script>
-<script src="assets/js/browser.min.js"></script>
-<script src="assets/js/breakpoints.min.js"></script>
-<script src="assets/js/util.js"></script>
 <script src="assets/js/main.js"></script>
 
 <script>
-// Dummy Data (you can expand later)
+
+// 🔥 DATA (you can expand later)
 const data = {
     "IT": {
         "TCS": [4500,4550,4600,4650,4700],
@@ -100,17 +86,19 @@ const data = {
     }
 };
 
-// EMA
+// 🔥 EMA FUNCTION
 function calculateEMA(prices, period) {
     let k = 2 / (period + 1);
-    let ema = [prices[0]];
+    let ema = prices[0];
+
     for (let i = 1; i < prices.length; i++) {
-        ema.push(prices[i] * k + ema[i - 1] * (1 - k));
+        ema = prices[i] * k + ema * (1 - k);
     }
-    return ema;
+
+    return ema; // only last EMA needed
 }
 
-// Gradient Color
+// 🔥 SMOOTH GRADIENT COLOR
 function getGradientColor(value) {
     let r, g;
 
@@ -125,44 +113,66 @@ function getGradientColor(value) {
     return `rgb(${r}, ${g}, 0)`;
 }
 
-let table = document.getElementById("emaTable");
+// 🔥 MAIN LOGIC
+window.onload = function() {
 
-for (let sector in data) {
+    let table = document.getElementById("emaTable");
+    let sectorResults = [];
 
-    let stocks = data[sector];
-    let total = Object.keys(stocks).length;
+    for (let sector in data) {
 
-    let count20 = 0, count50 = 0, count100 = 0, count200 = 0;
+        let stocks = data[sector];
+        let total = Object.keys(stocks).length;
 
-    for (let stock in stocks) {
-        let prices = stocks[stock];
-        let last = prices[prices.length - 1];
+        let count20 = 0, count50 = 0, count100 = 0, count200 = 0;
 
-        if (last > calculateEMA(prices,20).slice(-1)[0]) count20++;
-        if (last > calculateEMA(prices,50).slice(-1)[0]) count50++;
-        if (last > calculateEMA(prices,100).slice(-1)[0]) count100++;
-        if (last > calculateEMA(prices,200).slice(-1)[0]) count200++;
+        for (let stock in stocks) {
+            let prices = stocks[stock];
+            let last = prices[prices.length - 1];
+
+            let ema20 = calculateEMA(prices,20);
+            let ema50 = calculateEMA(prices,50);
+            let ema100 = calculateEMA(prices,100);
+            let ema200 = calculateEMA(prices,200);
+
+            if (last > ema20) count20++;
+            if (last > ema50) count50++;
+            if (last > ema100) count100++;
+            if (last > ema200) count200++;
+        }
+
+        sectorResults.push({
+            sector,
+            p20: (count20/total)*100,
+            p50: (count50/total)*100,
+            p100: (count100/total)*100,
+            p200: (count200/total)*100
+        });
     }
 
-    let p20 = (count20 / total) * 100;
-    let p50 = (count50 / total) * 100;
-    let p100 = (count100 / total) * 100;
-    let p200 = (count200 / total) * 100;
+    // 🔥 SORT strongest first
+    sectorResults.sort((a,b)=> b.p20 - a.p20);
 
-    let row = table.insertRow();
-    row.insertCell(0).innerText = sector;
+    // 🔥 RENDER
+    sectorResults.forEach(item => {
 
-    function addCell(val) {
-        let c = row.insertCell(-1);
-        c.innerText = val.toFixed(2) + "%";
-        c.style.backgroundColor = getGradientColor(val);
-    }
+        let row = table.insertRow();
+        row.insertCell(0).innerText = item.sector;
 
-    addCell(p20);
-    addCell(p50);
-    addCell(p100);
-    addCell(p200);
-}
+        function add(val) {
+            let c = row.insertCell(-1);
+            c.innerText = val.toFixed(1) + "%";
+            c.style.backgroundColor = getGradientColor(val);
+        }
+
+        add(item.p20);
+        add(item.p50);
+        add(item.p100);
+        add(item.p200);
+    });
+
+};
+
 </script>
 
 </body>
