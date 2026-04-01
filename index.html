@@ -48,6 +48,9 @@
 <article id="intro">
     <h2 class="major">Sector EMA Strength</h2>
 
+    <!-- DEBUG TEXT (remove later if you want) -->
+    <p style="color:white;">Dashboard Loaded ✅</p>
+
     <table id="emaTable" border="1">
         <tr>
             <th>Sector</th>
@@ -69,12 +72,16 @@
 
 <div id="bg"></div>
 
+<!-- IMPORTANT: keep ALL template scripts -->
 <script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
 <script src="assets/js/main.js"></script>
 
 <script>
 
-// 🔥 DATA (you can expand later)
+// 🔥 DATA
 const data = {
     "IT": {
         "TCS": [4500,4550,4600,4650,4700],
@@ -95,10 +102,10 @@ function calculateEMA(prices, period) {
         ema = prices[i] * k + ema * (1 - k);
     }
 
-    return ema; // only last EMA needed
+    return ema;
 }
 
-// 🔥 SMOOTH GRADIENT COLOR
+// 🔥 COLOR GRADIENT
 function getGradientColor(value) {
     let r, g;
 
@@ -113,10 +120,12 @@ function getGradientColor(value) {
     return `rgb(${r}, ${g}, 0)`;
 }
 
-// 🔥 MAIN LOGIC
-window.onload = function() {
+// 🔥 SAFE RUN AFTER TEMPLATE LOAD
+setTimeout(function () {
 
     let table = document.getElementById("emaTable");
+    if (!table) return;
+
     let sectorResults = [];
 
     for (let sector in data) {
@@ -150,7 +159,7 @@ window.onload = function() {
         });
     }
 
-    // 🔥 SORT strongest first
+    // 🔥 SORT
     sectorResults.sort((a,b)=> b.p20 - a.p20);
 
     // 🔥 RENDER
@@ -171,7 +180,7 @@ window.onload = function() {
         add(item.p200);
     });
 
-};
+}, 300); // delay fixes template conflict
 
 </script>
 
