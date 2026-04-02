@@ -1,47 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>EMA Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        th, td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #ccc;
-        }
-        th {
-            background: #333;
-            color: #fff;
-        }
-        button {
-            padding: 10px 20px;
-            background: #4CAF50;
-            border: none;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        button:hover {
-            background: #45a049;
-        }
-    </style>
-</head>
-<body>
-
-<h2>Sector EMA Dashboard</h2>
 <button onclick="updateEMAs()">Update EMA</button>
-
 <table id="emaTable">
     <tr>
         <th>Sector</th>
@@ -73,23 +30,17 @@ function getGradientColor(value) {
 
 async function updateEMAs() {
     const table = document.getElementById("emaTable");
-    table.innerHTML = `<tr>
-        <th>Sector</th><th>EMA20</th><th>EMA50</th><th>EMA100</th><th>EMA200</th>
-    </tr>`;
+
+    // Only remove old rows except header
+    while(table.rows.length > 1) table.deleteRow(1);
 
     try {
-        // ⚡ Dummy data for testing
         const data = [
             {sector:"Technology", p20:65, p50:40, p100:75, p200:55},
             {sector:"Finance", p20:45, p50:60, p100:50, p200:35},
             {sector:"Healthcare", p20:30, p50:25, p100:50, p200:60},
             {sector:"Energy", p20:55, p50:50, p100:45, p200:70}
         ];
-
-        // Uncomment below to fetch from your backend
-        // const res = await fetch("http://localhost:5000/update-ema");
-        // if(!res.ok) throw new Error("Network response not ok");
-        // const data = await res.json();
 
         data.forEach(r=>{
             const row = table.insertRow();
@@ -101,14 +52,10 @@ async function updateEMAs() {
             });
         });
     } catch(e) {
-        console.error("Failed to update EMAs:", e);
-        alert("Failed to update EMAs: " + e.message);
+        console.error(e);
     }
 }
 
 // Auto-update on page load
 updateEMAs();
 </script>
-
-</body>
-</html>
