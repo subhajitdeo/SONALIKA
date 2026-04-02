@@ -1,1 +1,3 @@
 
+ema today = (close today * k) + {ema yeaseterday * (1-k)}
+ 
