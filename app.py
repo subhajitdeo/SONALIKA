@@ -1,23 +1,24 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 import yfinance as yf
 import time
 import threading
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='assets', template_folder='.')
 
 # 🔥 Sectors
+# 🔥 Lighter Sectors for Testing
 sectors = {
-    "IT": ["TCS.NS","INFY.NS","WIPRO.NS","HCLTECH.NS","TECHM.NS","LTIM.NS"],
-    "Banking": ["HDFCBANK.NS","ICICIBANK.NS","SBIN.NS","AXISBANK.NS","KOTAKBANK.NS","INDUSINDBK.NS"],
-    "Auto": ["TATAMOTORS.NS","MARUTI.NS","M&M.NS","BAJAJ-AUTO.NS","HEROMOTOCO.NS","EICHERMOT.NS"],
-    "FMCG": ["HINDUNILVR.NS","ITC.NS","NESTLEIND.NS","BRITANNIA.NS","DABUR.NS","MARICO.NS"],
-    "Pharma": ["SUNPHARMA.NS","DRREDDY.NS","CIPLA.NS","DIVISLAB.NS","LUPIN.NS","AUROPHARMA.NS"],
-    "Energy": ["RELIANCE.NS","ONGC.NS","BPCL.NS","IOC.NS","GAIL.NS","ADANIGREEN.NS"],
-    "Metal": ["TATASTEEL.NS","JSWSTEEL.NS","HINDALCO.NS","COALINDIA.NS","NMDC.NS"],
-    "Infra": ["LT.NS","ULTRACEMCO.NS","GRASIM.NS","SIEMENS.NS"],
-    "Telecom": ["BHARTIARTL.NS","INDUSTOWER.NS"],
-    "Finance": ["BAJFINANCE.NS","BAJAJFINSV.NS","SBILIFE.NS","HDFCLIFE.NS","ICICIPRULI.NS"],
-    "Power": ["NTPC.NS","POWERGRID.NS","ADANIPOWER.NS","TATAPOWER.NS"]
+    "IT": ["TCS.NS", "INFY.NS"],
+    "Banking": ["HDFCBANK.NS", "ICICIBANK.NS"],
+    "Auto": ["TATAMOTORS.NS", "MARUTI.NS"],
+    "FMCG": ["HINDUNILVR.NS", "ITC.NS"],
+    "Pharma": ["SUNPHARMA.NS", "DRREDDY.NS"],
+    "Energy": ["RELIANCE.NS", "ONGC.NS"],
+    "Metal": ["TATASTEEL.NS", "JSWSTEEL.NS"],
+    "Infra": ["LT.NS", "ULTRACEMCO.NS"],
+    "Telecom": ["BHARTIARTL.NS"],
+    "Finance": ["BAJFINANCE.NS"],
+    "Power": ["NTPC.NS", "POWERGRID.NS"]
 }
 
 # 🔥 EMA simple formula
@@ -66,14 +67,20 @@ def calculate_sector_data():
             "p200": (counts["200"]/valid)*100 if valid else 0
         })
 
-        # Sort by p20 after each sector
-        sector_results.sort(key=lambda x: x["p20"], reverse=True)
+    # Sort by p20 after all sectors
+    sector_results.sort(key=lambda x: x["p20"], reverse=True)
 
+# 🔥 API Endpoint
 @app.route("/api/ema")
 def get_ema_data():
     return jsonify(sector_results)
 
-# 🔥 Background thread to update sector data every N minutes
+# 🔥 Serve frontend
+@app.route("/")
+def index():
+    return send_from_directory('.', 'index.html')
+
+# 🔥 Background updater
 def background_updater(interval=60*15):  # 15 min
     while True:
         print("Starting sector EMA calculation...")
@@ -82,6 +89,7 @@ def background_updater(interval=60*15):  # 15 min
         time.sleep(interval)
 
 if __name__ == "__main__":
-    # Start background updater thread
+    # Start background thread
     threading.Thread(target=background_updater, daemon=True).start()
-    app.run(debug=True)
+    # Run app
+    app.run(host="0.0.0.0", port=10000, debug=True)
