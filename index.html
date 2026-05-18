@@ -24,7 +24,7 @@
         .top { box-shadow: 0 0 15px rgba(120,200,140,0.6); }
         .weak { box-shadow: 0 0 15px rgba(220,110,110,0.6); }
 
-        /* 🔥 LOADER */
+        /* LOADER */
         #loader {
             text-align: center;
             padding: 20px;
@@ -45,7 +45,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* 🔥 PROGRESS BAR */
+        /* PROGRESS BAR */
         .progress-container {
             width: 80%;
             height: 10px;
@@ -73,67 +73,20 @@
     <div class="content">
         <div class="inner">
             <h1>SONALIKA</h1>
-            <p>Sector Strength Dashboard 🚀</p>
+            <p>Watch. Wait. Execute.</p>
         </div>
     </div>
 
-                <nav>
-    <ul>
-        <li><a href="https://subhajitdeo.github.io/stock.dna/" target="_blank">Intro</a></li>
-        <li><a href="https://subhajitdeo.github.io/shape.dna/" target="_blank">Work</a></li>
-        <li><a href="https://subhajitdeo.github.io/ema.dna/" target="_blank">About</a></li>
-        <li><a href="#contact">Contact</a></li>
-    </ul>
-</nav>
-    
+    <nav>
+        <ul>
+            <li><a href="https://subhajitdeo.github.io/stock.dna/" target="_blank">Intro</a></li>
+            <li><a href="https://subhajitdeo.github.io/shape.dna/" target="_blank">Work</a></li>
+            <li><a href="https://subhajitdeo.github.io/ema.dna/" target="_blank">About</a></li>
+        </ul>
+    </nav>
 </header>
 
-<div id="main">
-
-<!-- INTRO -->
-<article id="intro">
-    <h2 class="major">Sector EMA Strength</h2>
-
-    <!-- 🔥 LOADER -->
-    <div id="loader">
-        <div class="spinner"></div>
-        <p id="loadingText" style="color:white;">Initializing...</p>
-
-        <div class="progress-container">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-    </div>
-
-    <table id="emaTable" style="display:none;">
-        <tr>
-            <th>Sector</th>
-            <th>EMA20</th>
-            <th>EMA50</th>
-            <th>EMA100</th>
-            <th>EMA200</th>
-        </tr>
-    </table>
-</article>
-
-<!-- WORK -->
-<article id="work">
-    <h2 class="major">Work</h2>
-    <p>Market breadth analyzer using EMA logic.</p>
-</article>
-
-<!-- ABOUT -->
-<article id="about">
-    <h2 class="major">About</h2>
-    <p>Uses Yahoo Finance data. No API limits.</p>
-</article>
-
-<!-- CONTACT -->
-<article id="contact">
-    <h2 class="major">Contact</h2>
-    <p>Coming soon...</p>
-</article>
-
-</div>
+<div id="main"></div>
 
 <footer id="footer">
     <p>&copy; SONALIKA</p>
@@ -149,51 +102,5 @@
 <script src="assets/js/util.js"></script>
 <script src="assets/js/main.js"></script>
 
-<script>
-function getGradientColor(value) {
-    const red={r:220,g:110,b:110}, yellow={r:230,g:200,b:120}, green={r:120,g:200,b:140};
-    let r,g,b;
-    if(value<50){ let t=value/50; r=red.r+(yellow.r-red.r)*t; g=red.g+(yellow.g-red.g)*t; b=red.b+(yellow.b-red.b)*t; }
-    else{ let t=(value-50)/50; r=yellow.r+(green.r-yellow.r)*t; g=yellow.g+(green.g-yellow.g)*t; b=yellow.b+(green.b-yellow.b)*t; }
-    return `rgb(${r|0},${g|0},${b|0})`;
-}
-
-async function loadEMA() {
-    let table = document.getElementById("emaTable");
-    let progressBar = document.getElementById("progressBar");
-    let loadingText = document.getElementById("loadingText");
-
-    table.style.display = "none";
-    document.getElementById("loader").style.display = "block";
-
-    let res = await fetch("/api/ema");
-    let results = await res.json();
-
-    table.innerHTML = `<tr>
-        <th>Sector</th><th>EMA20</th><th>EMA50</th><th>EMA100</th><th>EMA200</th>
-    </tr>`;
-
-    results.forEach((r,index)=>{
-        let row = table.insertRow();
-        row.insertCell(0).innerText = r.sector;
-        if(index===0) row.classList.add("top");
-        if(index===results.length-1) row.classList.add("weak");
-        [r.p20,r.p50,r.p100,r.p200].forEach(v=>{
-            let c=row.insertCell(-1);
-            c.innerText=v.toFixed(1)+"%";
-            c.style.backgroundColor=getGradientColor(v);
-        });
-        progressBar.style.width = ((index+1)/results.length*100) + "%";
-        loadingText.innerText = `Loading ${r.sector}...`;
-    });
-
-    document.getElementById("loader").style.display = "none";
-    table.style.display = "table";
-}
-
-// Refresh every 1 min to get latest backend data
-loadEMA();
-setInterval(loadEMA, 60000);
-</script>
 </body>
 </html>
