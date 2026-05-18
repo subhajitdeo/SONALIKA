@@ -7,59 +7,36 @@
     <link rel="stylesheet" href="assets/css/main.css" />
 
     <style>
-        table { width: 100%; border-collapse: collapse; }
-
-        th, td {
-            padding: 10px;
-            text-align: center;
+        /* Disclaimer specific styles */
+        .disclaimer-text {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #ddd;
+        }
+        
+        .disclaimer-text strong {
+            color: #ffaa66;
+        }
+        
+        .disclaimer-text .highlight {
+            color: #ff6666;
             font-weight: bold;
         }
-
-        td {
-            transition: background-color 0.6s ease, transform 0.2s ease;
+        
+        .disclaimer-box {
+            background: rgba(0,0,0,0.3);
+            border-left: 3px solid #ff6666;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
         }
-
-        td:hover { transform: scale(1.05); }
-
-        .top { box-shadow: 0 0 15px rgba(120,200,140,0.6); }
-        .weak { box-shadow: 0 0 15px rgba(220,110,110,0.6); }
-
-        /* LOADER */
-        #loader {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .spinner {
-            border: 4px solid rgba(255,255,255,0.2);
-            border-top: 4px solid #7dd3fc;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            margin: auto;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* PROGRESS BAR */
-        .progress-container {
-            width: 80%;
-            height: 10px;
-            background: rgba(255,255,255,0.1);
-            margin: 15px auto;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: #7dd3fc;
-            transition: width 0.3s ease;
+        
+        .signature {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            text-align: right;
+            font-style: italic;
         }
     </style>
 </head>
@@ -82,14 +59,80 @@
             <li><a href="https://subhajitdeo.github.io/stock.dna/" target="_blank">Intro</a></li>
             <li><a href="https://subhajitdeo.github.io/shape.dna/" target="_blank">Work</a></li>
             <li><a href="https://subhajitdeo.github.io/ema.dna/" target="_blank">About</a></li>
+            <li><a href="#disclaimer">Disclaimer</a></li>
         </ul>
     </nav>
 </header>
 
-<div id="main"></div>
+<div id="main">
+
+<!-- DISCLAIMER ARTICLE -->
+<article id="disclaimer">
+    <h2 class="major">⚠️ DISCLAIMER</h2>
+    
+    <div class="disclaimer-text">
+        <p class="highlight">🚨 NOT SEBI REGISTERED</p>
+        
+        <p><strong>SONALIKA</strong> and all associated tools (stock.dna, shape.dna, ema.dna) are <strong class="highlight">NOT</strong> registered with the <strong>Securities and Exchange Board of India (SEBI)</strong> or any other regulatory authority.</p>
+        
+        <div class="disclaimer-box">
+            <p><strong>📢 EDUCATIONAL PURPOSE ONLY</strong></p>
+            <p>These tools are created <strong>solely for educational and research purposes</strong>. They are intended to help users understand market concepts, technical analysis, and trading patterns.</p>
+        </div>
+        
+        <p><strong>⚠️ IMPORTANT WARNINGS:</strong></p>
+        
+        <ul style="margin-left: 1.5rem; line-height: 1.8;">
+            <li>📊 <strong>Not Investment Advice</strong> — Nothing on these tools constitutes financial advice, trading recommendations, or investment guidance.</li>
+            <li>💸 <strong>100% Risk is Yours</strong> — Any trades or investments made based on these tools are <strong class="highlight">at your own risk</strong>.</li>
+            <li>📉 <strong>Past Performance ≠ Future Results</strong> — Historical data and backtests do not guarantee future returns.</li>
+            <li>🔞 <strong>Not for Beginners</strong> — Trading and investing involve significant risk of capital loss. Only trade with money you can afford to lose.</li>
+            <li>🔄 <strong>Data Accuracy</strong> — While we strive for accuracy, data may be delayed, incorrect, or incomplete.</li>
+            <li>⚖️ <strong>Regulatory Compliance</strong> — You are solely responsible for complying with your local laws and regulations.</li>
+        </ul>
+        
+        <div class="disclaimer-box">
+            <p><strong>🎓 FOR LEARNING ONLY</strong></p>
+            <p>These tools are designed to help you learn about:</p>
+            <ul style="margin-left: 1.5rem;">
+                <li>• Technical Analysis (EMA, moving averages)</li>
+                <li>• Sector rotation and relative strength</li>
+                <li>• Chart patterns and market structure</li>
+                <li>• Trading psychology and risk management</li>
+            </ul>
+        </div>
+        
+        <p><strong>📋 YOUR RESPONSIBILITY:</strong></p>
+        <p>By using SONALIKA and its associated tools, you acknowledge that:</p>
+        <ul style="margin-left: 1.5rem; line-height: 1.8;">
+            <li>✓ You are using these tools at your <strong class="highlight">own risk</strong></li>
+            <li>✓ You will <strong>NOT</strong> hold the creator liable for any financial losses</li>
+            <li>✓ You will consult a <strong>SEBI-registered financial advisor</strong> before making real trades</li>
+            <li>✓ You understand that <strong>trading can result in total loss of capital</strong></li>
+        </ul>
+        
+        <p><strong>🏛️ NO LIABILITY:</strong></p>
+        <p>Under no circumstances shall the creators, developers, or distributors of SONALIKA be held liable for any direct, indirect, incidental, special, or consequential damages arising from the use or inability to use these tools.</p>
+        
+        <div class="disclaimer-box">
+            <p><strong>🔒 DO YOUR OWN RESEARCH (DYOR)</strong></p>
+            <p>Always conduct your own research before making any trading or investment decisions. Never rely solely on automated tools or indicators.</p>
+        </div>
+        
+        <p><strong>📜 AGREEMENT:</strong></p>
+        <p>By continuing to use SONALIKA, you explicitly agree to all terms stated in this disclaimer. If you do not agree, please <strong class="highlight">DO NOT USE</strong> these tools.</p>
+        
+        <div class="signature">
+            <p>— SONALIKA TEAM<br>
+            <span style="font-size: 0.7rem;">For Educational Use Only | Not Financial Advice</span></p>
+        </div>
+    </div>
+</article>
+
+</div>
 
 <footer id="footer">
-    <p>&copy; SONALIKA</p>
+    <p>&copy; SONALIKA — Not SEBI Registered | Educational Purpose Only</p>
 </footer>
 
 </div>
@@ -101,6 +144,15 @@
 <script src="assets/js/breakpoints.min.js"></script>
 <script src="assets/js/util.js"></script>
 <script src="assets/js/main.js"></script>
+
+<script>
+    // Small tweak to update footer text dynamically (optional)
+    document.addEventListener('DOMContentLoaded', function() {
+        if(document.querySelector('#footer p')) {
+            // Footer already has the text, keeping it clean
+        }
+    });
+</script>
 
 </body>
 </html>
